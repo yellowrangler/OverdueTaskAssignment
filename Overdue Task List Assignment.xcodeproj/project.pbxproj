@@ -21,6 +21,10 @@
 		58EB14B618B2B8C50054713E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EB149818B2B8C50054713E /* UIKit.framework */; };
 		58EB14BE18B2B8C50054713E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 58EB14BC18B2B8C50054713E /* InfoPlist.strings */; };
 		58EB14C018B2B8C50054713E /* Overdue_Task_List_AssignmentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 58EB14BF18B2B8C50054713E /* Overdue_Task_List_AssignmentTests.m */; };
+		58EB14CB18B2BA130054713E /* ODAddTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58EB14CA18B2BA130054713E /* ODAddTaskViewController.m */; };
+		58EB14CE18B2BA2F0054713E /* ODDetailTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58EB14CD18B2BA2F0054713E /* ODDetailTaskViewController.m */; };
+		58EB14D118B2BA470054713E /* ODEditTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58EB14D018B2BA470054713E /* ODEditTaskViewController.m */; };
+		58EB14D418B2C74C0054713E /* ODTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 58EB14D318B2C74C0054713E /* ODTask.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +57,14 @@
 		58EB14BB18B2B8C50054713E /* Overdue Task List AssignmentTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Overdue Task List AssignmentTests-Info.plist"; sourceTree = "<group>"; };
 		58EB14BD18B2B8C50054713E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		58EB14BF18B2B8C50054713E /* Overdue_Task_List_AssignmentTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Overdue_Task_List_AssignmentTests.m; sourceTree = "<group>"; };
+		58EB14C918B2BA130054713E /* ODAddTaskViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ODAddTaskViewController.h; sourceTree = "<group>"; };
+		58EB14CA18B2BA130054713E /* ODAddTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODAddTaskViewController.m; sourceTree = "<group>"; };
+		58EB14CC18B2BA2F0054713E /* ODDetailTaskViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ODDetailTaskViewController.h; sourceTree = "<group>"; };
+		58EB14CD18B2BA2F0054713E /* ODDetailTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODDetailTaskViewController.m; sourceTree = "<group>"; };
+		58EB14CF18B2BA470054713E /* ODEditTaskViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ODEditTaskViewController.h; sourceTree = "<group>"; };
+		58EB14D018B2BA470054713E /* ODEditTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODEditTaskViewController.m; sourceTree = "<group>"; };
+		58EB14D218B2C74C0054713E /* ODTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ODTask.h; sourceTree = "<group>"; };
+		58EB14D318B2C74C0054713E /* ODTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODTask.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,11 +124,18 @@
 		58EB149A18B2B8C50054713E /* Overdue Task List Assignment */ = {
 			isa = PBXGroup;
 			children = (
+				58EB14D518B2C7530054713E /* Model */,
 				58EB14A318B2B8C50054713E /* ODAppDelegate.h */,
 				58EB14A418B2B8C50054713E /* ODAppDelegate.m */,
 				58EB14A618B2B8C50054713E /* Main.storyboard */,
 				58EB14A918B2B8C50054713E /* ODViewController.h */,
 				58EB14AA18B2B8C50054713E /* ODViewController.m */,
+				58EB14C918B2BA130054713E /* ODAddTaskViewController.h */,
+				58EB14CA18B2BA130054713E /* ODAddTaskViewController.m */,
+				58EB14CC18B2BA2F0054713E /* ODDetailTaskViewController.h */,
+				58EB14CD18B2BA2F0054713E /* ODDetailTaskViewController.m */,
+				58EB14CF18B2BA470054713E /* ODEditTaskViewController.h */,
+				58EB14D018B2BA470054713E /* ODEditTaskViewController.m */,
 				58EB14AC18B2B8C50054713E /* Images.xcassets */,
 				58EB149B18B2B8C50054713E /* Supporting Files */,
 			);
@@ -150,6 +169,15 @@
 				58EB14BC18B2B8C50054713E /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		58EB14D518B2C7530054713E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				58EB14D218B2C74C0054713E /* ODTask.h */,
+				58EB14D318B2C74C0054713E /* ODTask.m */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,8 +278,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58EB14D418B2C74C0054713E /* ODTask.m in Sources */,
 				58EB14A118B2B8C50054713E /* main.m in Sources */,
 				58EB14A518B2B8C50054713E /* ODAppDelegate.m in Sources */,
+				58EB14D118B2BA470054713E /* ODEditTaskViewController.m in Sources */,
+				58EB14CB18B2BA130054713E /* ODAddTaskViewController.m in Sources */,
+				58EB14CE18B2BA2F0054713E /* ODDetailTaskViewController.m in Sources */,
 				58EB14AB18B2B8C50054713E /* ODViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
