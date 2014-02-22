@@ -7,6 +7,7 @@
 //
 
 #import "ODViewController.h"
+#import "ODDetailTaskViewController.h"
 
 @interface ODViewController ()
 
@@ -43,6 +44,8 @@
         [self.taskObjects addObject:task];
     }
     
+    NSLog(@"%@", self.taskObjects);
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -63,9 +66,46 @@
     return 1;
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ODTask *task = [self.taskObjects objectAtIndex:indexPath.row];
+    
+    [self updateToggleCompletionOfTask:task forIndexPath:indexPath];
+    
+    [self.tableView reloadData];
+
+}
+
+-(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        // get task
+        ODTask *task = [self.taskObjects objectAtIndex:indexPath.row];
+        
+        // remove the element from the array
+        [self deleteTask:task forIndexPath:indexPath];
+        
+        // delete the task  from the taskOjects array
+        [self.taskObjects removeObjectAtIndex:indexPath.row];
+        
+        //animate the deletion
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+        // reload the table
+//        [self.tableView reloadData];
+    }
+
+}
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     ODTask *task = [self.taskObjects objectAtIndex:indexPath.row];
     cell.textLabel.text = task.name;
@@ -75,14 +115,24 @@
     cell.detailTextLabel.text = [formatter stringFromDate:task.date];
     
     // do test of bool here for color
+    if (task.complete) cell.backgroundColor = [UIColor greenColor];
+    else
+    {
+        BOOL dateIsLargerThenCurrentDate = [self isDate1GreaterThenDate2:[NSDate date] and:task.date];
+        if (dateIsLargerThenCurrentDate) cell.backgroundColor = [UIColor redColor];
+        else cell.backgroundColor = [UIColor yellowColor];
+    }
     
     return cell;
 }
 
+
 #pragma mark actions
 - (IBAction)reorderButtonPressed:(UIBarButtonItem *)sender {
     
-    
+    if (self.tableView.editing)[self.tableView setEditing:NO animated:YES];
+    else [self.tableView setEditing:YES animated:YES];
+
     
     NSLog(@"Did press reorder");
 }
@@ -101,9 +151,36 @@
         ODAddTaskViewController *addTaskViewContoller = segue.destinationViewController;
         addTaskViewContoller.delegate = self;
     }
+    else if ([segue.destinationViewController isKindOfClass:[ODDetailTaskViewController class]])
+    {
+        ODDetailTaskViewController *detailTaskViewController = segue.destinationViewController;
+        NSIndexPath *path = sender;
+        detailTaskViewController.task = self.taskObjects[path.row];
+        
+        detailTaskViewController.delegate = self;
+    }
 }
 
 #pragma mark Delegates
+-(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+    [self performSegueWithIdentifier:@"detailTaskViewConrollerSegue" sender:indexPath];
+}
+
+-(BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+-(void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    ODTask *task = self.taskObjects[sourceIndexPath.row];
+    [self.taskObjects removeObjectAtIndex:sourceIndexPath.row];
+    [self.taskObjects insertObject:task atIndex:destinationIndexPath.row];
+    
+    [self saveTasks];
+}
+
 -(void)didCancel
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -136,6 +213,12 @@
     [self.tableView reloadData];
 }
 
+-(void)updateTask
+{
+    [self saveTasks];
+    [self.tableView reloadData];
+}
+
 #pragma mark  Helper methods
 -(NSDictionary *)taskObjectAsAPropertyList: (ODTask *)task
 {
@@ -153,13 +236,60 @@
     return taskObject;
 }
 
+-(BOOL)isDate1GreaterThenDate2:(NSDate *)date1 and:(NSDate *)date2
+{
+    NSTimeInterval timeInterval1 = [date1 timeIntervalSince1970];
+    NSTimeInterval timeInterval2 = [date2 timeIntervalSince1970];
+    
+    if (timeInterval1 > timeInterval2) return YES;
+    else return NO;
+    
+}
 
+-(void)updateToggleCompletionOfTask:(ODTask *)task forIndexPath:(NSIndexPath *)indexPath
+{
 
+    // toggle completion
+    if (task.complete) task.complete = NO;
+    else task.complete = YES;
+    
+    // get current list from user defaults
+    NSMutableArray *taskObjectsAsPropertyLists = [[[NSUserDefaults standardUserDefaults] arrayForKey:TASK_LIST_KEY] mutableCopy];
+    
+    // replace the task object with new updated task object
+    [taskObjectsAsPropertyLists replaceObjectAtIndex:indexPath.row withObject:[self taskObjectAsAPropertyList:task]];
+    
+    // new array back to user data and syncronize
+    [[NSUserDefaults standardUserDefaults] setObject:taskObjectsAsPropertyLists forKey:TASK_LIST_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
+-(void)deleteTask:(ODTask *)task forIndexPath:(NSIndexPath *)indexPath
+{
+    // get current list from user defaults
+    NSMutableArray *taskObjectsAsPropertyLists = [[[NSUserDefaults standardUserDefaults] arrayForKey:TASK_LIST_KEY] mutableCopy];
+    
+    // replace the task object with new updated task object
+    [taskObjectsAsPropertyLists removeObjectAtIndex:indexPath.row];
 
+    // new array back to user data and syncronize
+    [[NSUserDefaults standardUserDefaults] setObject:taskObjectsAsPropertyLists forKey:TASK_LIST_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+ }
 
+-(void)saveTasks
+{
+    // get current list from user defaults
+    NSMutableArray *taskObjectsAsPropertyLists = [[NSMutableArray alloc] init];
+    
+    for (int x = 0; x < [self.taskObjects count]; x++)
+    {
+        [taskObjectsAsPropertyLists addObject:[self taskObjectAsAPropertyList:self.taskObjects[x]]];
+    }
 
-
-
+    // new array back to user data and syncronize
+    [[NSUserDefaults standardUserDefaults] setObject:taskObjectsAsPropertyLists forKey:TASK_LIST_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 @end

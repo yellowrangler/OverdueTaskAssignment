@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "ODAddTaskViewController.h"
+#import "ODDetailTaskViewController.h"
 
-@interface ODViewController : UIViewController <ODAddTaskViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface ODViewController : UIViewController <ODAddTaskViewControllerDelegate, ODDetailTaskViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSMutableArray *taskObjects;

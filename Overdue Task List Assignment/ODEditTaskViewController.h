@@ -7,8 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ODTask.h"
 
-@interface ODEditTaskViewController : UIViewController
+@protocol ODEditTaskViewControllerDelegate <NSObject>
+
+-(void)didUpdateTask;
+
+@end
+
+@interface ODEditTaskViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate>
+
+@property (weak, nonatomic)id <ODEditTaskViewControllerDelegate> delegate;
+
+@property (strong, nonatomic) IBOutlet ODTask *task;
 
 @property (strong, nonatomic) IBOutlet UITextField *taskNameTextField;
 @property (strong, nonatomic) IBOutlet UITextView *textView;

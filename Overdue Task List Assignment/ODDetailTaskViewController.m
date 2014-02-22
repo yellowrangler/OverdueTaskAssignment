@@ -7,6 +7,7 @@
 //
 
 #import "ODDetailTaskViewController.h"
+#import "ODEditTaskViewController.h"
 
 @interface ODDetailTaskViewController ()
 
@@ -27,6 +28,30 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    self.taskNameLabel.text = self.task.name;
+    self.taskDetailsLabel.text = self.task.description;
+    [self.taskDetailsLabel sizeToFit];
+
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"MM-dd-yyyy"];
+
+    NSDate *date = self.task.date;
+    NSString *stringFromDate = [formatter stringFromDate:date];
+
+    self.taskDateLabel.text = stringFromDate;
+
+}
+
+#pragma mark segue
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.destinationViewController isKindOfClass:[ODEditTaskViewController class]])
+    {
+        ODEditTaskViewController *editTaskViewController = segue.destinationViewController;
+        editTaskViewController.task = self.task;
+        
+        editTaskViewController.delegate = self;
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -36,5 +61,29 @@
 }
 
 - (IBAction)editButtonPressed:(UIBarButtonItem *)sender {
+    
+    [self performSegueWithIdentifier:@"editTaskViewConrollerSegue" sender:nil];
 }
+
+#pragma mark delegate
+-(void)didUpdateTask
+{
+    
+    self.taskNameLabel.text = self.task.name;
+    self.taskDetailsLabel.text = self.task.description;
+    [self.taskDetailsLabel sizeToFit];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"MM-dd-yyyy"];
+    
+    NSDate *date = self.task.date;
+    NSString *stringFromDate = [formatter stringFromDate:date];
+    
+    self.taskDateLabel.text = stringFromDate;
+    
+    [self.navigationController popViewControllerAnimated:YES];
+    
+    [self.delegate updateTask];
+}
+
 @end

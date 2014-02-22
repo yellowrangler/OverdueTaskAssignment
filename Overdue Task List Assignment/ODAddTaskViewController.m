@@ -28,6 +28,8 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    self.textView.delegate = self;
+    self.taskNameTextField.delegate = self;
 }
 
 - (void)didReceiveMemoryWarning
@@ -46,6 +48,27 @@
     // add logic to throw alert if no info or faulty info passed
     
     [self.delegate didAddTask:[self createTaskObject]];
+}
+
+#pragma mark delegates
+-(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    // this is hackey solution - user could copy /n as part of string
+    if ([text isEqualToString:@"\n"])
+    {
+        [self.textView resignFirstResponder];
+        return  NO;
+    }
+    else
+    {
+        return YES;
+    }
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [self.taskNameTextField resignFirstResponder];
+    return  YES;
 }
 
 #pragma mark helper methods

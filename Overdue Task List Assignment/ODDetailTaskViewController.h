@@ -7,8 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ODTask.h"
+#import "ODEditTaskViewController.h"
 
-@interface ODDetailTaskViewController : UIViewController
+@protocol ODDetailTaskViewControllerDelegate <NSObject>
+
+-(void)updateTask;
+
+@end
+
+@interface ODDetailTaskViewController : UIViewController <ODEditTaskViewControllerDelegate>
+
+@property (weak, nonatomic)id <ODDetailTaskViewControllerDelegate> delegate;
+
+@property (strong, nonatomic) ODTask *task;
 
 @property (strong, nonatomic) IBOutlet UILabel *taskNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *taskDateLabel;
